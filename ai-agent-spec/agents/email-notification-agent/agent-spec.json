@@ -1,0 +1,73 @@
+{
+  "agentId": "email-notification-agent",
+  "version": "1.0.0",
+  "name": "Email Notification Agent",
+  "description": "Sends email notifications with attachments using Gmail API",
+  "category": "communication",
+  "tags": ["email", "gmail", "notifications", "attachments"],
+  "dockerImage": "marketplace/email-notification:1.0.0",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "to": {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "Recipient email addresses"
+      },
+      "cc": {
+        "type": "array",
+        "items": {"type": "string"}
+      },
+      "subject": {"type": "string"},
+      "body": {"type": "string"},
+      "bodyType": {
+        "type": "string",
+        "enum": ["text", "html"],
+        "default": "html"
+      },
+      "attachments": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "filename": {"type": "string"},
+            "path": {"type": "string"},
+            "contentType": {"type": "string"}
+          }
+        }
+      },
+      "template": {
+        "type": "string",
+        "enum": ["research-report", "notification", "summary"],
+        "description": "Email template to use"
+      }
+    },
+    "required": ["to", "subject", "body"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "messageId": {"type": "string"},
+      "sentAt": {"type": "string"},
+      "recipients": {"type": "array"},
+      "status": {"type": "string"},
+      "deliveryStatus": {
+        "type": "object",
+        "properties": {
+          "sent": {"type": "integer"},
+          "failed": {"type": "integer"},
+          "errors": {"type": "array"}
+        }
+      }
+    }
+  },
+  "healthEndpoint": "/health",
+  "resources": {
+    "memory": "256Mi",
+    "cpu": "0.2"
+  },
+  "environment": {
+    "GMAIL_CREDENTIALS_PATH": "/secrets/gmail-credentials.json",
+    "GMAIL_SCOPE": "https://www.googleapis.com/auth/gmail.send"
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "agentId": "google-sheets-agent",
+  "version": "1.0.0",
+  "name": "Google Sheets Agent",
+  "description": "Manages data storage and tracking using Google Sheets API",
+  "category": "data-storage",
+  "tags": ["google-sheets", "storage", "tracking", "spreadsheet"],
+  "dockerImage": "marketplace/google-sheets:1.0.0",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "enum": ["create", "update", "append", "read"],
+        "description": "Action to perform"
+      },
+      "spreadsheetId": {
+        "type": "string",
+        "description": "Google Sheets ID (optional for create)"
+      },
+      "sheetName": {
+        "type": "string",
+        "default": "Sheet1"
+      },
+      "data": {
+        "type": "array",
+        "items": {"type": "array"},
+        "description": "2D array of data to write"
+      },
+      "headers": {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "Column headers"
+      },
+      "range": {
+        "type": "string",
+        "description": "Cell range (e.g., A1:C10)"
+      }
+    },
+    "required": ["action"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "spreadsheetId": {"type": "string"},
+      "spreadsheetUrl": {"type": "string"},
+      "updatedRows": {"type": "integer"},
+      "updatedColumns": {"type": "integer"},
+      "data": {
+        "type": "array",
+        "description": "Retrieved data for read operations"
+      }
+    }
+  },
+  "healthEndpoint": "/health",
+  "resources": {
+    "memory": "256Mi",
+    "cpu": "0.2"
+  },
+  "environment": {
+    "GOOGLE_CREDENTIALS_PATH": "/secrets/google-credentials.json",
+    "SHEETS_SCOPE": "https://www.googleapis.com/auth/spreadsheets"
+  }
+}

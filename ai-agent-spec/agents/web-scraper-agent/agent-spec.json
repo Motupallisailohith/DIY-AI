@@ -1,0 +1,68 @@
+{
+  "agentId": "web-scraper-agent",
+  "version": "1.0.0",
+  "name": "Web Scraper Agent",
+  "description": "Scrapes web content from multiple sources using Beautiful Soup and Scrapy",
+  "category": "data-collection",
+  "tags": ["scraping", "data-collection", "web", "research"],
+  "dockerImage": "marketplace/web-scraper:1.0.0",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "urls": {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "List of URLs to scrape"
+      },
+      "selectors": {
+        "type": "object",
+        "properties": {
+          "title": {"type": "string"},
+          "content": {"type": "string"},
+          "date": {"type": "string"}
+        },
+        "description": "CSS selectors for extracting content"
+      },
+      "maxPages": {
+        "type": "integer",
+        "default": 50,
+        "description": "Maximum number of pages to scrape"
+      },
+      "rateLimit": {
+        "type": "number",
+        "default": 1.0,
+        "description": "Delay between requests in seconds"
+      }
+    },
+    "required": ["urls"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "articles": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "url": {"type": "string"},
+            "title": {"type": "string"},
+            "content": {"type": "string"},
+            "date": {"type": "string"},
+            "source": {"type": "string"}
+          }
+        }
+      },
+      "totalScraped": {"type": "integer"},
+      "errors": {"type": "array"}
+    }
+  },
+  "healthEndpoint": "/health",
+  "resources": {
+    "memory": "512Mi",
+    "cpu": "0.5"
+  },
+  "environment": {
+    "SCRAPER_USER_AGENT": "ResearchBot/1.0",
+    "SCRAPER_TIMEOUT": "30"
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "templateId": "research-automation-pipeline",
+  "version": "1.0.0",
+  "name": "Automated Research Pipeline",
+  "description": "Complete research automation from web scraping to professional report generation",
+  "category": "research",
+  "tags": ["research", "automation", "reports", "free", "demo"],
+  "estimatedDuration": "5-10 minutes",
+  "costEstimate": "$0.00 (100% Free)",
+  "pipeline": {
+    "steps": [
+      {
+        "id": "scraper",
+        "agentId": "web-scraper-agent",
+        "name": "Web Content Scraper",
+        "position": {"x": 100, "y": 100},
+        "config": {
+          "urls": [
+            "https://techcrunch.com/category/artificial-intelligence/",
+            "https://www.wired.com/tag/artificial-intelligence/",
+            "https://venturebeat.com/ai/",
+            "https://www.theverge.com/ai-artificial-intelligence"
+          ],
+          "selectors": {
+            "title": "h1, h2, .entry-title, .headline",
+            "content": ".entry-content, .article-content, .post-content",
+            "date": ".date, .published, time"
+          },
+          "maxPages": 20,
+          "rateLimit": 2.0
+        }
+      },
+      {
+        "id": "analyzer",
+        "agentId": "data-analyzer-agent",
+        "name": "AI Data Analyzer",
+        "position": {"x": 300, "y": 100},
+        "config": {
+          "analysisType": "all",
+          "model": "facebook/bart-large-cnn"
+        }
+      },
+      {
+        "id": "reporter",
+        "agentId": "report-generator-agent",
+        "name": "Report Generator",
+        "position": {"x": 500, "y": 100},
+        "config": {
+          "template": "research",
+          "title": "AI Market Research Report",
+          "includeCharts": true,
+          "format": "pdf"
+        }
+      },
+      {
+        "id": "storage",
+        "agentId": "google-sheets-agent",
+        "name": "Data Storage",
+        "position": {"x": 300, "y": 250},
+        "config": {
+          "action": "create",
+          "sheetName": "Research Data",
+          "headers": ["Date", "Source", "Title", "Sentiment", "Topics"]
+        }
+      },
+      {
+        "id": "notifier",
+        "agentId": "email-notification-agent",
+        "name": "Email Distributor",
+        "position": {"x": 700, "y": 100},
+        "config": {
+          "subject": "📊 Your AI Research Report is Ready!",
+          "template": "research-report",
+          "bodyType": "html"
+        }
+      }
+    ],
+    "connections": [
+      {
+        "from": "scraper",
+        "to": "analyzer",
+        "dataMapping": {
+          "articles": "articles"
+        }
+      },
+      {
+        "from": "analyzer",
+        "to": "reporter",
+        "dataMapping": {
+          "insights": "insights"
+        }
+      },
+      {
+        "from": "analyzer",
+        "to": "storage",
+        "dataMapping": {
+          "data": "insights.statistics"
+        }
+      },
+      {
+        "from": "reporter",
+        "to": "notifier",
+        "dataMapping": {
+          "attachments": [{"filename": "research-report.pdf", "path": "reportPath"}]
+        }
+      }
+    ]
+  },
+  "inputParameters": {
+    "researchTopic": {
+      "type": "string",
+      "description": "Topic to research (e.g., 'AI market trends', 'Electric vehicles')",
+      "default": "Artificial Intelligence trends"
+    },
+    "emailRecipients": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Email addresses to send the report to"
+    },
+    "maxArticles": {
+      "type": "integer",
+      "default": 50,
+      "description": "Maximum number of articles to analyze"
+    }
+  },
+  "expectedOutputs": [
+    "Professional PDF research report (15+ pages)",
+    "Interactive charts and visualizations",
+    "Google Sheets with raw data",
+    "Email notification with attachments",
+    "Key insights and recommendations"
+  ],
+  "freeResources": [
+    "Hugging Face AI models (free tier)",
+    "Google Sheets API (free tier)",
+    "Gmail API (free tier)",
+    "Web scraping (no API costs)",
+    "Chart generation (free libraries)"
+  ]
+}

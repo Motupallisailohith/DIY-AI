@@ -1,0 +1,72 @@
+{
+  "agentId": "report-generator-agent",
+  "version": "1.0.0",
+  "name": "Report Generator Agent",
+  "description": "Generates professional PDF reports with charts and visualizations",
+  "category": "document-generation",
+  "tags": ["reports", "pdf", "charts", "visualization", "documents"],
+  "dockerImage": "marketplace/report-generator:1.0.0",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "insights": {
+        "type": "object",
+        "description": "Analysis results from data analyzer"
+      },
+      "template": {
+        "type": "string",
+        "enum": ["research", "market-analysis", "trend-report", "executive-summary"],
+        "default": "research"
+      },
+      "title": {
+        "type": "string",
+        "description": "Report title"
+      },
+      "includeCharts": {
+        "type": "boolean",
+        "default": true
+      },
+      "format": {
+        "type": "string",
+        "enum": ["pdf", "html", "markdown"],
+        "default": "pdf"
+      }
+    },
+    "required": ["insights", "title"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "reportUrl": {"type": "string"},
+      "reportPath": {"type": "string"},
+      "charts": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "type": {"type": "string"},
+            "url": {"type": "string"},
+            "title": {"type": "string"}
+          }
+        }
+      },
+      "metadata": {
+        "type": "object",
+        "properties": {
+          "pages": {"type": "integer"},
+          "size": {"type": "string"},
+          "generatedAt": {"type": "string"}
+        }
+      }
+    }
+  },
+  "healthEndpoint": "/health",
+  "resources": {
+    "memory": "1Gi",
+    "cpu": "0.5"
+  },
+  "environment": {
+    "REPORT_OUTPUT_DIR": "/tmp/reports",
+    "CHART_THEME": "professional"
+  }
+}

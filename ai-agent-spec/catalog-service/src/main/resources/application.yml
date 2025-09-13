@@ -1,0 +1,64 @@
+spring:
+  profiles:
+    active: dev
+
+---
+
+# ========== DEV PROFILE ==========
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:marketplace;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password: sa
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      "[hibernate.dialect]": org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+---
+
+# ========== LOCAL POSTGRES PROFILE ==========
+spring:
+  config:
+    activate:
+      on-profile: local-postgres
+  datasource:
+    url: jdbc:postgresql://localhost:5432/marketplace
+    username: app
+    password: app
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      "[hibernate.dialect]": org.hibernate.dialect.PostgreSQLDialect
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

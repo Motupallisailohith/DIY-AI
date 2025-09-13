@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AI Agent Definition",
+  "type": "object",
+  "required": ["agentId", "displayName", "version", "dockerImage", "inputSchema", "healthEndpoint"],
+  "properties": {
+    "agentId": {
+      "type": "string",
+      "pattern": "^[a-z0-9\\-]+$",
+      "description": "Unique identifier, lowercase letters, numbers, hyphens"
+    },
+    "displayName": { "type": "string" },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic versioning, e.g. 1.0.0"
+    },
+    "dockerImage": {
+      "type": "string",
+      "description": "OCI image reference, e.g. registry.local/agents/hello-world:0.1.0"
+    },
+    "inputSchema": {
+      "type": "object",
+      "description": "JSON Schema for the /execute payload; left open in Draft-07 to avoid external refs",
+      "additionalProperties": true
+    },
+    "resourceLimits": {
+      "type": "object",
+      "properties": {
+        "cpu":    { "type": "string", "pattern": "^[0-9]+m$" },
+        "memory": { "type": "string", "pattern": "^[0-9]+Mi$" },
+        "gpu":    { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "healthEndpoint": {
+      "type": "string",
+      "pattern": "^/[-a-zA-Z0-9_/]*$"
+    },
+    "secrets": {
+      "type": "object",
+      "additionalProperties": { "type": "string" },
+      "description": "Map of ENV_VAR → vault/path"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "description": { "type": "string" },
+        "author": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,101 @@
+{
+  "agentId": "gpt4-content-generator",
+  "displayName": "GPT-4 Content Generator",
+  "version": "1.0.0",
+  "dockerImage": "registry.local/agents/gpt4-content:1.0.0",
+  "category": "content-generation",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "topic": {
+        "type": "string",
+        "description": "Main topic or theme for content"
+      },
+      "platform": {
+        "type": "string",
+        "enum": ["instagram", "twitter", "linkedin", "facebook"],
+        "description": "Target social media platform"
+      },
+      "tone": {
+        "type": "string",
+        "enum": ["professional", "casual", "humorous", "inspirational", "educational"],
+        "default": "professional"
+      },
+      "targetAudience": {
+        "type": "string",
+        "description": "Target audience description"
+      },
+      "contentType": {
+        "type": "string",
+        "enum": ["post", "story", "article", "announcement"],
+        "default": "post"
+      },
+      "includeHashtags": {
+        "type": "boolean",
+        "default": true
+      },
+      "includeCTA": {
+        "type": "boolean",
+        "default": true
+      },
+      "includeEmojis": {
+        "type": "boolean",
+        "default": true
+      },
+      "customPrompt": {
+        "type": "string",
+        "description": "Additional custom instructions"
+      }
+    },
+    "required": ["topic", "platform"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "content": {
+        "type": "string",
+        "description": "Generated content text"
+      },
+      "hashtags": {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "Generated hashtags"
+      },
+      "cta": {
+        "type": "string",
+        "description": "Call-to-action text"
+      },
+      "imagePrompt": {
+        "type": "string",
+        "description": "Suggested image generation prompt"
+      },
+      "characterCount": {
+        "type": "number",
+        "description": "Character count for platform validation"
+      },
+      "platformOptimized": {
+        "type": "boolean",
+        "description": "Whether content meets platform requirements"
+      }
+    }
+  },
+  "resourceLimits": {
+    "cpu": "500m",
+    "memory": "512Mi",
+    "gpu": 0
+  },
+  "healthEndpoint": "/health",
+  "secrets": {
+    "OPENAI_API_KEY": "vault/openai/api_key"
+  },
+  "metadata": {
+    "tags": ["content", "gpt4", "social-media", "ai-generation"],
+    "description": "Generate platform-optimized social media content using GPT-4",
+    "author": "Platform Team",
+    "configurable": {
+      "prompts": true,
+      "platformLimits": true,
+      "toneCustomization": true
+    }
+  }
+}

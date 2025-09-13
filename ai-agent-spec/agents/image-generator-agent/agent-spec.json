@@ -1,0 +1,103 @@
+{
+  "agentId": "ai-image-generator",
+  "displayName": "AI Image Generator",
+  "version": "1.0.0",
+  "dockerImage": "registry.local/agents/image-generator:1.0.0",
+  "category": "media-generation",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "prompt": {
+        "type": "string",
+        "description": "Image generation prompt"
+      },
+      "platform": {
+        "type": "string",
+        "enum": ["instagram", "twitter", "linkedin", "facebook"],
+        "description": "Target platform for image sizing"
+      },
+      "style": {
+        "type": "string",
+        "enum": ["photorealistic", "artistic", "cartoon", "minimalist", "corporate"],
+        "default": "photorealistic"
+      },
+      "aspectRatio": {
+        "type": "string",
+        "enum": ["1:1", "16:9", "9:16", "4:5"],
+        "description": "Image aspect ratio"
+      },
+      "provider": {
+        "type": "string",
+        "enum": ["openai-dalle", "pollinations", "midjourney"],
+        "default": "pollinations"
+      },
+      "quality": {
+        "type": "string",
+        "enum": ["standard", "hd", "ultra"],
+        "default": "standard"
+      },
+      "includeText": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether to include text overlay"
+      },
+      "textOverlay": {
+        "type": "string",
+        "description": "Text to overlay on image"
+      }
+    },
+    "required": ["prompt"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "imageUrl": {
+        "type": "string",
+        "description": "Generated image URL"
+      },
+      "imageId": {
+        "type": "string",
+        "description": "Unique image identifier"
+      },
+      "dimensions": {
+        "type": "object",
+        "properties": {
+          "width": {"type": "number"},
+          "height": {"type": "number"}
+        }
+      },
+      "platformOptimized": {
+        "type": "boolean",
+        "description": "Whether image meets platform requirements"
+      },
+      "fileSize": {
+        "type": "number",
+        "description": "Image file size in bytes"
+      },
+      "format": {
+        "type": "string",
+        "description": "Image format (jpg, png, webp)"
+      },
+      "hostedUrl": {
+        "type": "string",
+        "description": "ImgBB hosted URL for sharing"
+      }
+    }
+  },
+  "resourceLimits": {
+    "cpu": "1000m",
+    "memory": "1Gi",
+    "gpu": 1
+  },
+  "healthEndpoint": "/health",
+  "secrets": {
+    "OPENAI_API_KEY": "vault/openai/api_key",
+    "IMGBB_API_KEY": "vault/imgbb/api_key",
+    "MIDJOURNEY_API_KEY": "vault/midjourney/api_key"
+  },
+  "metadata": {
+    "tags": ["image", "ai-generation", "visual-content", "social-media"],
+    "description": "Generate platform-optimized images using AI (DALL-E, Pollinations, Midjourney)",
+    "author": "Platform Team"
+  }
+}

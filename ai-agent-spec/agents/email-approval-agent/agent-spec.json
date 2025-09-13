@@ -1,0 +1,118 @@
+{
+  "agentId": "email-approval-system",
+  "displayName": "Email Approval System",
+  "version": "1.0.0",
+  "dockerImage": "registry.local/agents/email-approval:1.0.0",
+  "category": "workflow",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "content": {
+        "type": "object",
+        "description": "Content to be approved",
+        "properties": {
+          "text": {"type": "string"},
+          "hashtags": {"type": "array", "items": {"type": "string"}},
+          "imageUrl": {"type": "string"},
+          "platform": {"type": "string"}
+        }
+      },
+      "approvers": {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "Email addresses of approvers"
+      },
+      "approvalType": {
+        "type": "string",
+        "enum": ["single", "double", "unanimous"],
+        "default": "double"
+      },
+      "deadline": {
+        "type": "string",
+        "format": "date-time",
+        "description": "Approval deadline"
+      },
+      "priority": {
+        "type": "string",
+        "enum": ["low", "medium", "high", "urgent"],
+        "default": "medium"
+      },
+      "customMessage": {
+        "type": "string",
+        "description": "Custom message for approvers"
+      },
+      "autoApproveAfter": {
+        "type": "number",
+        "description": "Hours after which to auto-approve if no response"
+      }
+    },
+    "required": ["content", "approvers"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "approvalId": {
+        "type": "string",
+        "description": "Unique approval request ID"
+      },
+      "status": {
+        "type": "string",
+        "enum": ["pending", "approved", "rejected", "expired"],
+        "description": "Current approval status"
+      },
+      "approvedBy": {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "List of approvers who approved"
+      },
+      "rejectedBy": {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "List of approvers who rejected"
+      },
+      "feedback": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "approver": {"type": "string"},
+            "action": {"type": "string"},
+            "comment": {"type": "string"},
+            "timestamp": {"type": "string"}
+          }
+        }
+      },
+      "finalContent": {
+        "type": "object",
+        "description": "Final approved content (may include modifications)"
+      },
+      "approvalUrl": {
+        "type": "string",
+        "description": "URL for approvers to review and approve"
+      }
+    }
+  },
+  "resourceLimits": {
+    "cpu": "200m",
+    "memory": "256Mi",
+    "gpu": 0
+  },
+  "healthEndpoint": "/health",
+  "secrets": {
+    "GMAIL_CLIENT_ID": "vault/gmail/client_id",
+    "GMAIL_CLIENT_SECRET": "vault/gmail/client_secret",
+    "GMAIL_REFRESH_TOKEN": "vault/gmail/refresh_token"
+  },
+  "metadata": {
+    "tags": ["approval", "workflow", "email", "human-in-loop"],
+    "description": "Send formatted HTML emails for content approval with double-approval system",
+    "author": "Platform Team",
+    "features": [
+      "HTML email templates",
+      "Double approval workflow",
+      "Deadline management",
+      "Feedback collection",
+      "Auto-approval fallback"
+    ]
+  }
+}

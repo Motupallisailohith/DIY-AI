@@ -1,0 +1,95 @@
+{
+  "agentId": "data-analyzer-agent",
+  "version": "1.0.0",
+  "name": "Data Analyzer Agent",
+  "description": "Analyzes scraped data using Hugging Face models for insights and trends",
+  "category": "data-analysis",
+  "tags": ["analysis", "ai", "nlp", "insights", "huggingface"],
+  "dockerImage": "marketplace/data-analyzer:1.0.0",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "articles": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string"},
+            "content": {"type": "string"},
+            "date": {"type": "string"},
+            "source": {"type": "string"}
+          }
+        }
+      },
+      "analysisType": {
+        "type": "string",
+        "enum": ["sentiment", "topics", "trends", "summary", "all"],
+        "default": "all"
+      },
+      "model": {
+        "type": "string",
+        "default": "facebook/bart-large-cnn",
+        "description": "Hugging Face model to use"
+      }
+    },
+    "required": ["articles"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "insights": {
+        "type": "object",
+        "properties": {
+          "sentiment": {
+            "type": "object",
+            "properties": {
+              "positive": {"type": "number"},
+              "negative": {"type": "number"},
+              "neutral": {"type": "number"}
+            }
+          },
+          "topics": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "topic": {"type": "string"},
+                "frequency": {"type": "number"},
+                "relevance": {"type": "number"}
+              }
+            }
+          },
+          "trends": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "trend": {"type": "string"},
+                "growth": {"type": "number"},
+                "timeframe": {"type": "string"}
+              }
+            }
+          },
+          "summary": {"type": "string"}
+        }
+      },
+      "statistics": {
+        "type": "object",
+        "properties": {
+          "totalArticles": {"type": "integer"},
+          "avgSentiment": {"type": "number"},
+          "topSources": {"type": "array"}
+        }
+      }
+    }
+  },
+  "healthEndpoint": "/health",
+  "resources": {
+    "memory": "2Gi",
+    "cpu": "1.0"
+  },
+  "environment": {
+    "HF_TOKEN": "",
+    "MODEL_CACHE_DIR": "/tmp/models"
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "agentId": "serp-research-agent",
+  "displayName": "SERP Content Researcher",
+  "version": "1.0.0",
+  "dockerImage": "registry.local/agents/serp-research:1.0.0",
+  "category": "research",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Search query for content research"
+      },
+      "numResults": {
+        "type": "number",
+        "default": 10,
+        "minimum": 1,
+        "maximum": 50
+      },
+      "location": {
+        "type": "string",
+        "default": "United States",
+        "description": "Geographic location for search"
+      },
+      "language": {
+        "type": "string",
+        "default": "en",
+        "description": "Language code for search results"
+      },
+      "searchType": {
+        "type": "string",
+        "enum": ["web", "news", "images", "videos"],
+        "default": "web"
+      },
+      "timeframe": {
+        "type": "string",
+        "enum": ["any", "day", "week", "month", "year"],
+        "default": "month"
+      }
+    },
+    "required": ["query"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "results": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string"},
+            "url": {"type": "string"},
+            "snippet": {"type": "string"},
+            "date": {"type": "string"},
+            "source": {"type": "string"}
+          }
+        }
+      },
+      "trendingTopics": {
+        "type": "array",
+        "items": {"type": "string"}
+      },
+      "relatedQueries": {
+        "type": "array",
+        "items": {"type": "string"}
+      },
+      "contentInsights": {
+        "type": "object",
+        "properties": {
+          "popularKeywords": {"type": "array", "items": {"type": "string"}},
+          "contentGaps": {"type": "array", "items": {"type": "string"}},
+          "competitorContent": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  },
+  "resourceLimits": {
+    "cpu": "200m",
+    "memory": "256Mi",
+    "gpu": 0
+  },
+  "healthEndpoint": "/health",
+  "secrets": {
+    "SERP_API_KEY": "vault/serp/api_key"
+  },
+  "metadata": {
+    "tags": ["research", "serp", "seo", "content-discovery"],
+    "description": "Research trending content and topics using SERP API",
+    "author": "Platform Team"
+  }
+}

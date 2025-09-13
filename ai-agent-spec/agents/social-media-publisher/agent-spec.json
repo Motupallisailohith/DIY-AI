@@ -1,0 +1,139 @@
+{
+  "agentId": "multi-platform-publisher",
+  "displayName": "Social Media Publisher",
+  "version": "1.0.0",
+  "dockerImage": "registry.local/agents/social-publisher:1.0.0",
+  "category": "publishing",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "content": {
+        "type": "object",
+        "properties": {
+          "text": {"type": "string"},
+          "hashtags": {"type": "array", "items": {"type": "string"}},
+          "imageUrl": {"type": "string"},
+          "videoUrl": {"type": "string"}
+        },
+        "required": ["text"]
+      },
+      "platforms": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["instagram", "facebook", "twitter", "linkedin", "telegram"]
+        },
+        "description": "Target platforms for publishing"
+      },
+      "scheduledTime": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When to publish (optional, publishes immediately if not set)"
+      },
+      "platformSpecific": {
+        "type": "object",
+        "properties": {
+          "instagram": {
+            "type": "object",
+            "properties": {
+              "caption": {"type": "string"},
+              "altText": {"type": "string"},
+              "location": {"type": "string"}
+            }
+          },
+          "twitter": {
+            "type": "object",
+            "properties": {
+              "thread": {"type": "boolean"},
+              "replyToTweetId": {"type": "string"}
+            }
+          },
+          "linkedin": {
+            "type": "object",
+            "properties": {
+              "visibility": {"type": "string", "enum": ["PUBLIC", "CONNECTIONS"]},
+              "companyPage": {"type": "boolean"}
+            }
+          },
+          "facebook": {
+            "type": "object",
+            "properties": {
+              "pageId": {"type": "string"},
+              "targetAudience": {"type": "string"}
+            }
+          }
+        }
+      },
+      "trackingTags": {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "UTM tags for analytics tracking"
+      }
+    },
+    "required": ["content", "platforms"]
+  },
+  "outputSchema": {
+    "type": "object",
+    "properties": {
+      "publishResults": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "platform": {"type": "string"},
+            "status": {"type": "string", "enum": ["success", "failed", "scheduled"]},
+            "postId": {"type": "string"},
+            "postUrl": {"type": "string"},
+            "error": {"type": "string"},
+            "publishedAt": {"type": "string"},
+            "engagement": {
+              "type": "object",
+              "properties": {
+                "likes": {"type": "number"},
+                "shares": {"type": "number"},
+                "comments": {"type": "number"},
+                "views": {"type": "number"}
+              }
+            }
+          }
+        }
+      },
+      "overallStatus": {
+        "type": "string",
+        "enum": ["all_success", "partial_success", "all_failed"]
+      },
+      "analyticsUrls": {
+        "type": "object",
+        "description": "URLs for tracking post performance"
+      }
+    }
+  },
+  "resourceLimits": {
+    "cpu": "300m",
+    "memory": "512Mi",
+    "gpu": 0
+  },
+  "healthEndpoint": "/health",
+  "secrets": {
+    "FACEBOOK_ACCESS_TOKEN": "vault/facebook/access_token",
+    "TWITTER_API_KEY": "vault/twitter/api_key",
+    "TWITTER_API_SECRET": "vault/twitter/api_secret",
+    "TWITTER_ACCESS_TOKEN": "vault/twitter/access_token",
+    "TWITTER_ACCESS_SECRET": "vault/twitter/access_secret",
+    "LINKEDIN_ACCESS_TOKEN": "vault/linkedin/access_token",
+    "INSTAGRAM_ACCESS_TOKEN": "vault/instagram/access_token",
+    "TELEGRAM_BOT_TOKEN": "vault/telegram/bot_token"
+  },
+  "metadata": {
+    "tags": ["publishing", "social-media", "multi-platform", "automation"],
+    "description": "Publish content to multiple social media platforms with platform-specific optimizations",
+    "author": "Platform Team",
+    "supportedPlatforms": [
+      "Instagram (Graph API)",
+      "Facebook (Graph API)", 
+      "Twitter/X (Official API)",
+      "LinkedIn (Sales Navigator)",
+      "Telegram (Bot API)"
+    ]
+  }
+}
