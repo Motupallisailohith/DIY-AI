@@ -1,0 +1,44 @@
+# .gitignore for ai-agent-spec project
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+/target/
+
+# Maven
+/logs/
+/.mvn/
+!/.mvn/wrapper/maven-wrapper.jar
+
+# Node
+node_modules/
+/dist/
+/build/
+.env
+.env.*
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Python (if any)
+__pycache__/
+*.pyc
+
+# Logs
+*.log
+
+# Misc
+*.swp
+*.swo
+.idea/
+*.iml
+
+# Docker
+**/data/
+**/tmp/
